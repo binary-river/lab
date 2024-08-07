@@ -56,39 +56,4 @@ import javax.sql.DataSource;
 @Configuration
 public class RewardsConfig {
 
-	// Set this by adding a constructor.
-	private DataSource dataSource;
-
-	public RewardsConfig(DataSource dataSource) {
-		this.dataSource = dataSource;
-	}
-
-	@Bean
-	public RewardNetwork rewardNetwork() {
-		return new RewardNetworkImpl(accountRepository(), restaurantRepository(), rewardRepository());
-	}
-
-	@Bean
-	public AccountRepository accountRepository() {
-		JdbcAccountRepository jdbcAccountRepository = new JdbcAccountRepository();
-		jdbcAccountRepository.setDataSource(dataSource);
-		return jdbcAccountRepository;
-	}
-
-	@Bean
-	public RestaurantRepository restaurantRepository() {
-		JdbcRestaurantRepository restaurantRepository = new JdbcRestaurantRepository();
-		restaurantRepository.setDataSource(dataSource);
-		return restaurantRepository;
-	}
-
-	@Bean
-	public RewardRepository rewardRepository() {
-		JdbcRewardRepository rewardRepository = new JdbcRewardRepository();
-		rewardRepository.setDataSource(dataSource);
-		return rewardRepository;
-	}
-
-
-
 }
