@@ -6,6 +6,7 @@ import common.money.Percentage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import rewards.AccountContribution;
 import rewards.Dining;
@@ -14,6 +15,7 @@ import rewards.internal.account.Account;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
 
@@ -42,8 +44,8 @@ public class JdbcRewardRepositoryTests {
 	@BeforeEach
 	public void setUp() throws Exception {
 		dataSource = createTestDataSource();
-		repository = new JdbcRewardRepository(dataSource);
 		jdbcTemplate = new JdbcTemplate(dataSource);
+		repository = new JdbcRewardRepository(dataSource, jdbcTemplate);
 	}
 
 	@Test
@@ -74,8 +76,13 @@ public class JdbcRewardRepositoryTests {
 		//	  (If you are using Gradle, comment out the test exclude in
 		//    the build.gradle file.)
 		//
+		String sql = "SELECT * FROM T_REWARD WHERE CONFIRMATION_NUMBER = ?";
+
 		
 		Map<String, Object> values = null;
+
+		values = jdbcTemplate.queryForMap(sql, confirmation.getConfirmationNumber());
+
 		verifyInsertedValues(confirmation, dining, values);
 	}
 
@@ -92,7 +99,8 @@ public class JdbcRewardRepositoryTests {
 	private int getRewardCount() throws SQLException {
 		// TODO-01: Use JdbcTemplate to query for the number of rows in the T_REWARD table
 		// - Use "SELECT count(*) FROM T_REWARD" as SQL statement
-		return -1;
+		String sql = "select count(*) from T_REWARD";
+		return jdbcTemplate.queryForObject(sql, Integer.class);
 	}
 
 	private DataSource createTestDataSource() {

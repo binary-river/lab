@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import org.springframework.jdbc.core.JdbcTemplate;
 import rewards.RewardNetwork;
 import rewards.internal.RewardNetworkImpl;
 import rewards.internal.account.AccountRepository;
@@ -20,6 +21,8 @@ public class RewardsConfig {
 
 	@Autowired
 	DataSource dataSource;
+	@Autowired
+	JdbcTemplate jdbcTemplate;
 		
 	@Bean
 	public RewardNetwork rewardNetwork(){
@@ -31,19 +34,19 @@ public class RewardsConfig {
 	
 	@Bean
 	public AccountRepository accountRepository(){
-		JdbcAccountRepository repository = new JdbcAccountRepository(dataSource);
+		JdbcAccountRepository repository = new JdbcAccountRepository(dataSource, jdbcTemplate);
 		return repository;
 	}
 	
 	@Bean
 	public RestaurantRepository restaurantRepository(){
-		JdbcRestaurantRepository repository = new JdbcRestaurantRepository(dataSource);
+		JdbcRestaurantRepository repository = new JdbcRestaurantRepository(dataSource, jdbcTemplate);
 		return repository;
 	}
 	
 	@Bean
 	public RewardRepository rewardRepository(){
-		JdbcRewardRepository repository = new JdbcRewardRepository(dataSource);
+		JdbcRewardRepository repository = new JdbcRewardRepository(dataSource, jdbcTemplate);
 		return repository;
 	}
 	
